@@ -13,6 +13,10 @@ public class RegisterSteps extends env_target {
 
     WebDriverWait wait;
 
+    // =======================
+    // SETUP & NAVIGATION
+    // =======================
+
     @Given("User is on parabank homepage")
     public void user_is_on_parabank_homepage() {
         driver = new ChromeDriver();
@@ -35,6 +39,10 @@ public class RegisterSteps extends env_target {
         ));
     }
 
+    // =======================
+    // FORM INPUT
+    // =======================
+
     @When("User input name")
     public void user_input_name() {
         driver.findElement(By.id("customer.firstName")).sendKeys("John");
@@ -43,9 +51,9 @@ public class RegisterSteps extends env_target {
 
     @And("User input address detail")
     public void user_input_address_detail() {
-        driver.findElement(By.id("customer.address.street")).sendKeys("Street");
-        driver.findElement(By.id("customer.address.city")).sendKeys("City");
-        driver.findElement(By.id("customer.address.state")).sendKeys("State");
+        driver.findElement(By.id("customer.address.street")).sendKeys("Main Street");
+        driver.findElement(By.id("customer.address.city")).sendKeys("Jakarta");
+        driver.findElement(By.id("customer.address.state")).sendKeys("DKI");
         driver.findElement(By.id("customer.address.zipCode")).sendKeys("12345");
         driver.findElement(By.id("customer.phoneNumber")).sendKeys("08123456789");
         driver.findElement(By.id("customer.ssn")).sendKeys("999999");
@@ -66,27 +74,56 @@ public class RegisterSteps extends env_target {
     @And("User input invalid password confirmation")
     public void user_input_invalid_password_confirmation() {
         driver.findElement(By.id("repeatedPassword")).clear();
-        driver.findElement(By.id("repeatedPassword")).sendKeys("WrongPassword");
+
+        // ⏱️ Delay agar input terbaca dengan benar
+        sleep(500);
+
+        driver.findElement(By.id("repeatedPassword")).sendKeys("WrongPassword123");
     }
+
+    // =======================
+    // SUBMIT
+    // =======================
 
     @When("User click Register button")
     public void user_click_register_button() {
         driver.findElement(By.xpath("//input[@value='Register']")).click();
     }
 
+    // =======================
+    // ASSERTION
+    // =======================
+
     @Then("User regist successfully")
     public void user_regist_successfully() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(text(),'Your account was created successfully')]")
-        ));
+        wait.until(driver ->
+                driver.getPageSource().contains("Your account was created successfully")
+        );
         driver.quit();
     }
 
     @Then("User get error password did not match")
     public void user_get_error_password_did_not_match() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(text(),'Passwords did not match')]")
-        ));
+
+        // ⏱️ Tunggu halaman reload
+        sleep(5000);
+
+        wait.until(driver ->
+                driver.getPageSource().contains("Passwords did not match")
+        );
+
         driver.quit();
+    }
+
+    // =======================
+    // HELPER
+    // =======================
+
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
