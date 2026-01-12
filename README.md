@@ -81,3 +81,9 @@ This project uses Cucumber BDD, so all test steps are defined in .feature files.
 Only one step definition class is used to avoid duplicate step issues.
 The project is designed for learning and demonstration purposes.
 Test data is static and can be enhanced in the future using external data sources.
+
+### Test Evidence
+
+- [Screenshot Folder](./screenshot)
+- [Test Report (PDF)](./screenshot/output.pdf)
+
